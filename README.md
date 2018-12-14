@@ -1,5 +1,5 @@
 # roll
-A calculator for shell wizards \
+A calculator for shell wizards
 
 Flags: \
 -i: Infix mode (default)  \

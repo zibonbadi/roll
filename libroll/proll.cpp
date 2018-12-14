@@ -24,7 +24,7 @@ int roll( int dice, int sides){
 double pRoll(const char* input){
 
 	
-	std::cout << "proll ver. 0.6\nwritten by Martin Funck\n\ninput_expr: \"" << input << "\"\n\n";
+	std::cout << "proll ver. 0.6\nwritten by Zibon Badi\n\ninput_expr: \"" << input << "\"\n\n";
 	
 	char* in = (char*)malloc(sizeof(char));
 	strcpy(in, input);

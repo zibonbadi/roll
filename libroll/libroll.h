@@ -1,6 +1,14 @@
 #ifndef libroll_h__
 #define libroll_h__
 
+
+#ifdef _WIN32
+	#define DLLEXPORT __declspec(dllexport)
+#else
+	#define DLLEXPORT 
+#endif
+
+
 #include "iroll.h"
 #include "proll.h"
 #include "stdio.h"

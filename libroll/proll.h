@@ -1,6 +1,8 @@
 #ifndef proll_h__
 #define proll_h__
 
-extern double pRoll(const char* input);
+#include "libroll.h"
+
+extern DLLEXPORT double pRoll(const char* input);
 
 #endif

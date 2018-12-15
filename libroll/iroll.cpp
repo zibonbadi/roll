@@ -50,44 +50,13 @@ const char* iRoll_str(const char* input){
 
 
 
-	char *argString = (char*) malloc(sizeof(input)+sizeof(char)*2);
+	char *argString = (char*) malloc(0);
 	argString = strcat(argString, "(");
 	argString = strcat(argString, input);
 	argString = strcat(argString, ")");
 
 	//std::cout << (int) *argString << ',' << argString << ',' << sizeof(argString)  << std::endl;
 
-
-
-	/*/
-	for(int i=1;i<argc;i++){
-		//std::cout << i << '-';
-
-
-		//char* tmp = (char*) realloc(argString,sizeof(argString)+sizeof(argv[i]));
-		//strcat(tmp, argString);
-		//strcat(tmp, argv[i]);
-		//strcat(tmp, " ");
-		//argString = tmp;
-		//free(tmp);
-
-
-		strcat(argString, argv[i]);
-		//std::cout << argv[i] << "... Done!\n";
-	}
-
-	strcat(argString, ")");
-
-
-	//std::cout << "iRoll ver. 0.1: a Proll-Parser.\nwritten by Martin Funck\n" << std::endl;
-
-
-	std::cout << '"' << argString << '"' << std::endl;
-
-	/*/
-
-
-	//std::string out = "";
 	char* out = (char*) malloc(sizeof(char));
 	std::stack<char> OperatorStack;
 
@@ -159,8 +128,6 @@ const char* iRoll_str(const char* input){
 	}
 
 
-	//free(out);
-	free(argString);
 	//std::cout << "iroll_out: " << out << std::endl;
 
 	return out;

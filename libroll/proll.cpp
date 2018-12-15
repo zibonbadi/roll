@@ -26,9 +26,7 @@ double pRoll(const char* input){
 
 	std::cout << "proll ver. 0.6.1\nwritten by Zibon Badi\n\ninput_expr: \"" << input << "\"\n\n";
 
-	char* in = (char*)malloc(sizeof(input));
-	strcpy(in, input);
-	char* pch = strtok (in," ,;");
+	char* pch = strtok ((char*)input," ,;");
 
 	double hand = 0;
 	double next = 0;
@@ -112,8 +110,6 @@ double pRoll(const char* input){
 
 		pch = strtok (NULL, " ,;");
   	}
-
-	free(in);
 
 	//std::cout << NumberStack.top() << std::endl;
 	return NumberStack.top();

@@ -59,7 +59,7 @@ const char* iRoll_str(const char* input){
 
 	std::stack<char> OperatorStack;
 
-	printf("iRoll ver. 0.6.2\n");
+	printf("iroll ver. 0.6.2\ninput_infix: %s\n\n",argString);
 	
 	//Pushing...
 	while ( *argString != '\0')

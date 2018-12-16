@@ -34,9 +34,7 @@ const int *getOperatorData(char op){
 	for(int i=0;i<listSize;i++ ){
 		if( (int)op == operators[i][0] ){	return operators[i];	}
 	}
-
-
-
+	
 	return	(const int[]){-1,-1,-1};
 }
 
@@ -54,7 +52,6 @@ const char* iRoll_str(const char* input){
 	argString = (char*) realloc(argString, strlen(input)+3);
 	sprintf(argString, "(%s)",input );
 
-	
 	//std::cout << argString << ',' << strlen(argString) << std::endl;
 
 	std::stack<char> OperatorStack;

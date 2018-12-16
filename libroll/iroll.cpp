@@ -48,39 +48,49 @@ const char* iRoll_str(const char* input){
 		Dijkstras Shunting-Yard-Algorithmus
 	/*/
 
+	
+	char* out = (char*) calloc(1,1);
+	char *argString = NULL;
+	argString = (char*) realloc(argString, strlen(input)+3);
+	sprintf(argString, "(%s)",input );
 
+	
+	//std::cout << argString << ',' << strlen(argString) << std::endl;
 
-	char *argString = (char*) malloc(0);
-	argString = strcat(argString, "(");
-	argString = strcat(argString, input);
-	argString = strcat(argString, ")");
-
-	//std::cout << (int) *argString << ',' << argString << ',' << sizeof(argString)  << std::endl;
-
-	char* out = (char*) malloc(sizeof(char));
 	std::stack<char> OperatorStack;
 
+	printf("iRoll ver. 0.6.2\n");
+	
 	//Pushing...
-	while ( (int)*argString != (int)'\0')
+	while ( *argString != '\0')
 	{
-		//printf("%c",*argString);
-
-		bool numberLoop = false;
-		while( ((*argString >='0') && (*argString <= '9')) || *argString == '.' ){
-				numberLoop = true;
-				out = strncat(out,argString,1);
+		//printf("\n[%s][%c]",out,*argString);
+		
+		if( ((*argString >='0') && (*argString <= '9')) || *argString == '.' ){
+			
+			while( ((*argString >='0') && (*argString <= '9')) || *argString == '.' ){
+				//printf("{%c}",*argString);
+				
+				out = (char*)realloc(out,strlen(out)+2); 
+				strncat(out,argString,1);
+				//sprintf(out, "%s%c",out,*argString);
+				
 				argString++;
-		}
-
-		if( numberLoop ){	out = strcat(out," ");	}
-
-		if( *argString == '('){
+			}
+			
+			argString--;
+			
+			out = (char*)realloc(out,strlen(out)+2); 
+			sprintf(out,"%s ",out );	
+			//sprintf(out,"%s%d ",out,std::stod(out,0) );	
+				
+		}else if( *argString == '('){
 			OperatorStack.push(*argString);
 		}else if( *argString == ')'){
 			while( OperatorStack.top() != '(' )
-			{
-				out = strncat(out,&OperatorStack.top(),1 );
-				out = strcat(out," ");
+			{	
+				out = (char*)realloc(out, strlen(out)+3); 
+				sprintf(out, "%s%c ",out,OperatorStack.top());
 				OperatorStack.pop();
 			}
 			//Klammer poppen
@@ -94,7 +104,6 @@ const char* iRoll_str(const char* input){
 				//std::cout << "Debug Print: TSO" << std::endl;
 				const int *topStackOperator = getOperatorData(	OperatorStack.top()	);
 				//std::cout << "Debug Print: TkO" << std::endl;
-
 				const int *tokenOperator = getOperatorData(	*argString	);
 
 				//std::cout << (char)topStackOperator[0] << ',' << (char)tokenOperator[0] << std::endl;
@@ -104,26 +113,29 @@ const char* iRoll_str(const char* input){
 				      		(	(topStackOperator[1] == tokenOperator[1]) &&
 				      		 	(topStackOperator[2] == 0) )
 				      	) && OperatorStack.top() != '(' ){
-
-					out = strncat(out,&OperatorStack.top(),1 );
-					out = strcat(out," ");
+					
+					//printf("Stack >> %c;",OperatorStack.top() );
+					
+					out = (char*)realloc(out,strlen(out)+3);
+					sprintf(out,"%s%c ",out,OperatorStack.top());
 					OperatorStack.pop();
 				}
+				//printf("%c >> Stack\n",*argString );
 				OperatorStack.push(*argString);
 			}
 
 
 		}
-
+	
 		argString++;
   	}
 
 
   	while(  !OperatorStack.empty() ){
 		std::cout << '"' << OperatorStack.top() << '"'<< std::endl;
-		out = strncat(out,&OperatorStack.top(),1 );
-		out = strcat(out," ");
-		//printf("%c ",OperatorStack.top());
+		out = (char*)realloc(out,strlen(out)+3); 
+			//printf("Stack >> %c.",OperatorStack.top() );
+		sprintf(out,"%s%c ",out,OperatorStack.top());
 		OperatorStack.pop();
 	}
 

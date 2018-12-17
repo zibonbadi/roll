@@ -28,7 +28,7 @@ int main(int argc, char* argv[]){
 		}else{	argString = argv[i];	}
 	}
 	
-	//
+	//Notausgang
 	if(argString == NULL && f_mode != 3){	std::cout << "No expression recieved :(\nType \"roll -h\" for help." << std::endl;	return 0;	}
 	
 	//printf("%i,%i\n",f_mode,f_verbose);

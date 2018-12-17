@@ -1,0 +1,14 @@
+mingw32-g++ -c -fpic iroll.cpp -o iroll.o
+mingw32-g++ -c -fpic proll.cpp -o proll.o
+
+mingw32-g++ -shared *.o libroll.h -o libroll.dll \
+    -static-libgcc -static-libstdc++ \
+    -Wl,--out-implib=libroll.dll.a \
+    -Wl,--export-all-symbols \
+    -Wl,--enable-auto-import
+
+mingw32-g++ roll.cpp -o roll -L. -lroll \
+    -static-libgcc -static-libstdc++ \
+    -Wl,--out-implib=libroll/libroll.dll.a \
+    -Wl,--export-all-symbols \
+    -Wl,--enable-auto-import

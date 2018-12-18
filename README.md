@@ -5,9 +5,9 @@ A calculator for shell wizards
 
 |Flag |Function
 |--- |---
-|-i |Infix mode (default)  \
-|-p |Reverse polish notation mode \
-|-t |Translate Infix -> RPN \
+|-i |Infix mode (default) 
+|-p |Reverse polish notation mode
+|-t |Translate Infix -> RPN
 |-h \| -? |help
 
 Example:

@@ -1,16 +1,20 @@
 # roll
 A calculator for shell wizards
 
-Flags: \
--i: Infix mode (default)  \
--p: Reverse polish notation mode \
--t: Translate Infix -> RPN \
--h or -?: help
+## Flags:
 
-Example: roll -i "1d20"
+|Flag |Function
+|--- |---
+|-i |Infix mode (default)  \
+|-p |Reverse polish notation mode \
+|-t |Translate Infix -> RPN \
+|-h \| -? |help
+
+Example:
+> roll -i "1d20"
 
 
-About roll
+## About roll
 
 roll is a command line frontend for a custom library called "libroll". \
 The intent of this distinction is that libroll is meant to be integrated into other programs for easy implementation of complex calculations involving dice rolling or other types of random number generation. \

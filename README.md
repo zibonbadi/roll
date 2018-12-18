@@ -1,7 +1,7 @@
 # roll
 A calculator for shell wizards
 
-## Flags:
+## Flags
 
 |Flag |Function
 |--- |---

@@ -38,7 +38,7 @@ double pRoll(const char* input){
 	while (pch != NULL)
 	{
 	
-		printf(">%d,%s\n",codeSize,pch );
+		//printf(">%d,%s\n",codeSize,pch );
 		
 		//Extend instruction memory
 		instruction = (char**) realloc(instruction, sizeof(char*)*(codeSize+1) );

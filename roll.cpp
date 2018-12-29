@@ -14,22 +14,29 @@ int main(int argc, char* argv[]){
 	for(int i=1;i<argc;i++){
 		//printf("%s;%i,%i\n",argv[i],f_mode,f_verbose);
 		
+		for(int c=1;(argv[i][c]!='\0' && argv[i][0]=='-');c++){
+			//printf("flag: %c\n",argv[i][c]);
+			switch(argv[i][c]){
+				case '?':{}
+				case 'h':{	f_mode = 3;	break;}
+				case 'i':{	f_mode = 0;	break;}
+				case 'p':{	f_mode = 1;	break;}
+				case 't':{	f_mode = 2;	break;}
+				case 'v':{	f_verbose = true;	break;}
+				default:{	printf("Unknown flag '-%c' ignored.\n",argv[i][c]);	break;}
+			}	
+		}
+		
 		//Infix-Modus
-		if(strcmp(argv[i],"-i")==0){	f_mode = 0;
-		//RPN-Modus
-		}else if(strcmp(argv[i],"-p")==0){	f_mode = 1;
-		//Translate-Modus
-		}else if(strcmp(argv[i],"-t")==0){	f_mode = 2;
-		//Help-Modus
-		}else if( strcmp(argv[i],"-?")==0 || strcmp(argv[i],"-h")==0 ){	f_mode = 3;
-		//Verbose
-		}else if(strcmp(argv[i],"-v")==0){	f_verbose = true;
-		//Fetch String
-		}else{	argString = argv[i];	}
+		if(	argv[i][0]!='-'){	argString = argv[i];	}
+		
 	}
 	
 	//Notausgang
 	if(argString == NULL && f_mode != 3){	std::cout << "No expression recieved :(\nType \"roll -h\" for help." << std::endl;	return 0;	}
+	
+	//Verbose
+	if(	f_verbose	){	printf("---Verbose input currently not implemented.---\n");	}
 	
 	//printf("%i,%i\n",f_mode,f_verbose);
 		

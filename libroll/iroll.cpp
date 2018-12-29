@@ -5,37 +5,62 @@
 
 
 //Liste der Operatoren: [][0] = Zeichen; [][1] = Rang; [][2]= 0?Links:Rechts -Assoziativ
-const int operators[][3] = {
-				{(int)'(' , -1, -1 },
-				{(int)')' , -1, -1 },
-				{(int)'+' , 4, 0 },
-				{(int)'-' , 4, 0 },
-				{(int)'*' , 3, 0 },
-				{(int)'/' , 3, 0 },
+struct Operator{
+	char* op = nullptr;
+	int rank = 0;
+	int assoc = 0;
+
+} operators[] = {
+				//Arithmetic
+				{"(" , -1, -1 },
+				{")" , -1, -1 },
+				{"+" , 4, 0 },
+				{"-" , 4, 0 },
+				{"*" , 3, 0 },
+				{"/" , 3, 0 },
+				{"%" , 3, 0 },
+				//Roll
+				{"d" , 3, 1 },
+				{"d!" , 3, 1 },
+				//Instructions
+				{"J" , 0, 1 },
+				{"P" , 0, 1 },
+				{"S" , 0, 0 },
+				{"D" , 0, 1 },
+				
+				//Logic
+				{"?" , 11, 1 },
+				{":" , 11, 1 },
+				{"=" , 7, 0 },
+				{"!=" , 7, 0 },
+				{">=" , 6, 0 },
+				{"<=" , 6, 0 },
+				
+				//Functions
+				{"a" , 1, 1 },
+				{"abs" , 1, 1 },
 				//Power/Potenz-Funktion: Nicht Assoziativ
-				//{(int)'p' , 2, 2 },
-				{(int)'%' , 3, 0 },
-				{(int)'d' , 3, 1 },
-				{(int)'D' , 3, 1 },
-				{(int)'a' , 1, 1 },
-				{(int)'&' , 6, 0 },
-				{(int)'|' , 7, 0 },
-				{(int)'^' , 8, 0 },
-				{(int)'!' , 1, 1 },
-				{(int)'<' , 5, 0 },
-				{(int)'>' , 5, 0 }
+				//{"p" , 2, 2 },
+				
+				//Bitwise
+				{"&" , 8, 0 },
+				{"|" , 9, 0 },
+				{"^" , 10, 0 },	
+				{"!" , 1, 1 },
+				{"<" , 5, 0 },
+				{">" , 5, 0 }
 			};
 
 
 
-const int *getOperatorData(char op){
+struct Operator getOperatorData(char* op){
 	const int listSize = ( sizeof(operators)/sizeof(operators[0]));
 	//Check Top Stack Operator
 	for(int i=0;i<listSize;i++ ){
-		if( (int)op == operators[i][0] ){	return operators[i];	}
+		if( strcmp(op, operators[i].op) == 0 ){	return operators[i];	}
 	}
 	
-	return	(const int[]){-1,-1,-1};
+	return {nullptr,-1,-1};
 }
 
 
@@ -47,97 +72,108 @@ const char* iRoll_str(const char* input){
 	/*/
 
 	
-	char* out = (char*) calloc(1,1);
-	char *argString = NULL;
-	argString = (char*) realloc(argString, strlen(input)+3);
-	sprintf(argString, "(%s)",input );
-
-	//std::cout << argString << ',' << strlen(argString) << std::endl;
-
-	std::stack<char> OperatorStack;
-
-	printf("iroll ver. 0.6.2\ninput_infix: %s\n\n",argString);
+	std::string out = "";
+	char *argString = (char*) calloc( (strlen(input)+5), sizeof(char));
+	sprintf(argString, "( %s )",input );
 	
-	//Pushing...
-	while ( *argString != '\0')
+	std::stack<char*> OperatorStack;
+
+	printf("iroll ver. 0.7: written by Zibon Badi.\ninput_infix: %s\n\n",argString);
+	
+	int exprSize = 0;
+	
+	char** token = (char**) calloc(1,sizeof(char**)); 
+	
+	//Tokenization
+	//printf("Create Tokens...\n");
+	argString = strtok( argString, " ,;\n");
+	while (argString != NULL)
 	{
-		//printf("\n[%s][%c]",out,*argString);
+		//printf("\tTkRealloc(%d)\n",exprSize);
 		
-		if( ((*argString >='0') && (*argString <= '9')) || *argString == '.' ){
+		//Extend instruction memory
+		token = (char**) realloc(token, sizeof(char*)*(exprSize+1) );
+		//printf("\tTkAppend(%d)\n",exprSize);
+		
+		//Append new instruction
+		token[exprSize] = argString;
+		exprSize++;
+		
+		//printf("\tTkTokenize(%d)\n",exprSize-1);
+		argString = strtok(NULL, " ,;\n");
+  	}
+	
+	//Parsing loop
+	//printf("Parse Code...\n");
+	for(int t=0;t<exprSize;t++){
+		
+		//printf("%s [%s]\n",out.c_str() ,token[t] );	
+		
+		try{
+			//Token ist Zahl
+			double tDouble = std::stod( token[t] );
 			
-			while( ((*argString >='0') && (*argString <= '9')) || *argString == '.' ){
-				//printf("{%c}",*argString);
+			out.append( token[t]);
+			out.append( " ");
 				
-				out = (char*)realloc(out,strlen(out)+2); 
-				strncat(out,argString,1);
-				//sprintf(out, "%s%c",out,*argString);
+		}catch( std::invalid_argument &ia){
+		
+			if( strcmp(token[t],"(")==0 ){
+				OperatorStack.push( token[t] );
+			}else if( strcmp(token[t],")")==0 ){
 				
-				argString++;
-			}
-			
-			argString--;
-			
-			out = (char*)realloc(out,strlen(out)+2); 
-			sprintf(out,"%s ",out );	
-			//sprintf(out,"%s%d ",out,std::stod(out,0) );	
-				
-		}else if( *argString == '('){
-			OperatorStack.push(*argString);
-		}else if( *argString == ')'){
-			while( OperatorStack.top() != '(' )
-			{	
-				out = (char*)realloc(out, strlen(out)+3); 
-				sprintf(out, "%s%c ",out,OperatorStack.top());
-				OperatorStack.pop();
-			}
-			//Klammer poppen
-			OperatorStack.pop();
-		}else if ( (*argString == ' ') || (*argString == ',') || (*argString == ';')){
-		}else{
-
-
-			if( !OperatorStack.empty() && (getOperatorData(*argString)[0] != -1) ){
-
-				//std::cout << "Debug Print: TSO" << std::endl;
-				const int *topStackOperator = getOperatorData(	OperatorStack.top()	);
-				//std::cout << "Debug Print: TkO" << std::endl;
-				const int *tokenOperator = getOperatorData(	*argString	);
-
-				//std::cout << (char)topStackOperator[0] << ',' << (char)tokenOperator[0] << std::endl;
-
-				//Precedence-Loop
-				while(	(	(topStackOperator[1] < tokenOperator[1]) ||
-				      		(	(topStackOperator[1] == tokenOperator[1]) &&
-				      		 	(topStackOperator[2] == 0) )
-				      	) && OperatorStack.top() != '(' ){
-					
-					//printf("Stack >> %c;",OperatorStack.top() );
-					
-					out = (char*)realloc(out,strlen(out)+3);
-					sprintf(out,"%s%c ",out,OperatorStack.top());
+				while( strcmp(OperatorStack.top(),"(")!=0  )
+				{	
+					//printf("Normal Bracket: OP '%s';\n", OperatorStack.top() );
+					out.append( OperatorStack.top() );
+					out.append( " " );
 					OperatorStack.pop();
 				}
-				//printf("%c >> Stack\n",*argString );
-				OperatorStack.push(*argString);
+				//Klammer poppen
+				OperatorStack.pop();
+			}else if( (getOperatorData( token[t] ).op != nullptr) ){
+
+				//std::cout << "Debug Print: TSO" << std::endl;
+				struct Operator topStackOperator = getOperatorData(	OperatorStack.top()	);
+				//std::cout << "Debug Print: TkO" << std::endl;
+				struct Operator tokenOperator = getOperatorData(	token[t]	);
+
+				//std::cout << topStackOperator.op << ',' << tokenOperator.op << std::endl;
+
+				//Precedence-Loop
+				while(	(	!OperatorStack.empty()				||
+						(topStackOperator.rank < tokenOperator.rank )	||
+				      		(	(topStackOperator.rank == tokenOperator.rank ) &&
+				      		 	(topStackOperator.assoc == 0)
+				      		)
+				      	) && strcmp(OperatorStack.top(),"(")!=0 ){
+					
+					//printf("Stack >> %s;\n",OperatorStack.top() );
+					
+					out.append( OperatorStack.top() );
+					out.append( " " );
+					OperatorStack.pop();
+				}
+				//printf("%s >> Stack;\n",token[t] );
+				OperatorStack.push(token[t]);
 			}
-
-
-		}
 	
-		argString++;
-  	}
-
+		}
+				
+		
+	}	
 
   	while(  !OperatorStack.empty() ){
-		std::cout << '"' << OperatorStack.top() << '"'<< std::endl;
-		out = (char*)realloc(out,strlen(out)+3); 
-			//printf("Stack >> %c.",OperatorStack.top() );
-		sprintf(out,"%s%c ",out,OperatorStack.top());
+		std::cout << "Excess Operator \"" << OperatorStack.top() << '"'<< std::endl;
+		out.append( OperatorStack.top() );
+		out.append( " " );
 		OperatorStack.pop();
 	}
 
-
-	//std::cout << "iroll_out: " << out << std::endl;
-
-	return out;
+	char* CStrOut = (char*) calloc(1,sizeof(char*));
+	strncpy(CStrOut, out.c_str(), out.length()+1 );
+	
+	//std::cout << "[" << CStrOut << "]\n";
+	
+	return CStrOut;
 }

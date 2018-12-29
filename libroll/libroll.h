@@ -15,7 +15,8 @@
 
 double iRoll(const char* input){
 	//printf("using libroll.h\n");
-	//const char* rpnExp = iRoll_str(input);	
+	//const char* rpnExp = iRoll_str(input);
+	//printf("RPN:%s\n",rpnExp);	
 	return pRoll(iRoll_str(input));
 }
 

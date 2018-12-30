@@ -27,7 +27,7 @@ int roll( int dice, int sides){
 double pRoll(const char* input){
 
 
-	std::cout << "proll ver. 0.7: written by Zibon Badi.\ninput_expr: \"" << input << "\"\n\n";
+	printf("proll ver. 0.7: written by Zibon Badi.\ninput_expr: \"%s\"\n\n",input);
 
 	char* pch = strtok ((char*)input," ,;\n");
 	int codeSize = 0;

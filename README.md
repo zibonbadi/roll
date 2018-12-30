@@ -21,4 +21,4 @@ The intent of this distinction is that libroll is meant to be integrated into ot
 libroll's approach is based on common Tabletop gaming [Dice Notation systems]( https://en.wikipedia.org/wiki/Dice_notation/ ), treating dice rolling as a mathematical operator with each die beginning at 1 and couting upwards to the specified amount of sides. \
 Currently these mathematical operators are being defined as "d" for normal rolls, as well as "d!" for rolls using exploding dice. \
 Both are right-to-left associative, meaning "AdBdC" is equivalent to "Ad(BdC)" but not "(AdB)dC". \
-For more information about alculations in libroll, see [the Wiki.](http://www.github.com/zibonbadi/roll/wiki/Home)
+For more information about calculations/programming in libroll, see [the Wiki.](http://www.github.com/zibonbadi/roll/wiki/Home)

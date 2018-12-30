@@ -9,6 +9,7 @@ A calculator for shell wizards
 |-p |Reverse polish notation mode
 |-t |Translate Infix -> RPN
 |-h \| -? |help
+|-v |verbose (Linux only)
 
 Example:
 > roll -i "1 d 20"

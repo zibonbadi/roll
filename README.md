@@ -11,7 +11,7 @@ A calculator for shell wizards
 |-h \| -? |help
 
 Example:
-> roll -i "1d20"
+> roll -i "1 d 20"
 
 
 ## About roll

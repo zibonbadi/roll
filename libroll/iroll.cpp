@@ -21,7 +21,7 @@ struct Operator{
 				{"%" , 3, 0 },
 				//Roll
 				{"d" , 3, 1 },
-				{"d!" , 3, 1 },
+				//{"d!" , 3, 1 },
 				//Instructions
 				{"J" , 0, 1 },
 				{"P" , 0, 1 },
@@ -56,6 +56,8 @@ struct Operator{
 struct Operator getOperatorData(char* op){
 	const int listSize = ( sizeof(operators)/sizeof(operators[0]));
 	//Check Top Stack Operator
+	
+	if( *op == 'd' && *(op+1) != '\0' ){	return getOperatorData("d");	}
 	for(int i=0;i<listSize;i++ ){
 		if( strcmp(op, operators[i].op) == 0 ){	return operators[i];	}
 	}
@@ -78,7 +80,7 @@ const char* iRoll_str(const char* input){
 	
 	std::stack<char*> OperatorStack;
 
-	printf("iroll ver. 0.7: written by Zibon Badi.\ninput_infix: %s\n\n",argString);
+	printf("iroll ver. 0.8: written by Zibon Badi.\ninput_infix: %s\n\n",argString);
 	
 	int exprSize = 0;
 	

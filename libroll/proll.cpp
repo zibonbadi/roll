@@ -4,30 +4,34 @@
 #include <stack>
 #include <random>
 
-int roll( int dice, int sides){
+int* roll( int dice, int sides){
 
 	std::random_device rng;
 
-	int sum = 0;
+	static int* out = (int*) realloc(out,0);
+	out = (int*) calloc(dice,sizeof(int));
 	
 	if(sides > 0){
 		for(int i=0;i<dice;i++){
 			std::cout << '\t' << dice << 'd' << sides << " (" << i << ") " ;
 			int roll = ( rng()%(sides) )+1;
-			sum += roll;
+			out[i] += roll;
 			std::cout << "-> " << roll << std::endl;
 		}
-		std::cout << "\t= " << sum << std::endl;
+		
+		//printf("exit...");
+		
+		return out;
 	}
 	
-	return sum;
+	return 0;
 }
 
 
 double pRoll(const char* input){
 
 
-	printf("proll ver. 0.7: written by Zibon Badi.\ninput_expr: \"%s\"\n\n",input);
+	printf("proll ver. 0.8: written by Zibon Badi.\ninput_expr: \"%s\"\n\n",input);
 
 	char* pch = strtok ((char*)input," ,;\n");
 	int codeSize = 0;
@@ -92,11 +96,108 @@ double pRoll(const char* input){
 		}
 		
 		//Rolling
-		else if( strcmp(instruction[IP],"d") == 0){
+		else if( *instruction[IP] == 'd'){
 			//Würfel AdB
-			int out = roll((int)next, (int)hand);
-
-			NumberStack.push( out );
+			
+			//
+			//	Possible flags:
+			//		'l' : push least on top
+			//		'h' : push highest on top
+			//		'-l' : reomve least from sum
+			//		'-h' : remove highest from sum
+			//		'/' : push roll's average
+			//		'+' : push roll's sum as well (if '/')
+			//		'!' : explosion roll
+			//
+			
+			if( (int)next != 0 && (int)hand != 0){
+			
+				char* ptr_rollChar = instruction[IP];
+				bool rf_max,rf_min,rf_rmmax,rf_rmmin,rf_avg,rf_avgSum,rf_explosion = false;
+				
+				//Determine flags
+				ptr_rollChar++;
+				while( *ptr_rollChar != '\0'){
+					//printf("%srollflag: %c\n", ( *(ptr_rollChar-1)=='-')?"negative ":"" ,*ptr_rollChar);
+					
+					if( *ptr_rollChar == 'l'){
+						if( *(ptr_rollChar-1)=='-' ){	rf_rmmin = true;
+						}else{	rf_min = true;	}
+					}
+					if( *ptr_rollChar == 'h'){
+						if( *(ptr_rollChar-1)=='-' ){	rf_rmmax = true;
+						}else{	rf_max = true;	}
+					}
+					if( *ptr_rollChar == '!'){	rf_explosion = true;	}
+					if( *ptr_rollChar == '/'){	rf_avg = true;	}
+					if( *ptr_rollChar == '+'){	rf_avgSum = true;	}
+					
+					//printf("{%i,%i,%i,%i,%i,%i,%i}\n",rf_max,rf_min,rf_rmmax,rf_rmmin,rf_avg,rf_avgSum,rf_explosion);
+					
+					
+					ptr_rollChar++;
+				}
+				
+				//setting up stuff about the roll
+				int *out = NULL;
+				int totalsum = 0, sum = 0, xroll_iter = 0,  max = -1, min = ((int)hand)+1;
+				
+				//(Possible explosion) rolling
+				do{
+					int i_max = 0, i_min = 0;
+					
+					sum = 0;
+					out = roll((int)next, (int)hand);
+					
+					//Determine MAX/min-Index
+					for(int i=0;i<(int)next;i++){
+						i_max = (out[i_max] < out[i])?i:i_max;
+						i_min = (out[i_min] > out[i])?i:i_min;
+					}
+					
+					for(int i=0;i<(int)next;i++){	
+						if(	( rf_rmmax && (i == i_max) ) ||
+							( rf_rmmin && (i == i_min) )
+						){
+							std::cout << "\tskipping die #" << i << std::endl;
+							continue;
+						}
+						sum += out[i];
+					}
+					
+					std::cout << "\t= " << sum << std::endl;
+					
+					//printf("%d;%d\n%d;%d\n",out[i_min],out[i_max],i_min,i_max);
+					
+					min = ( min > out[i_min])?out[i_min]:min;
+					max = ( max < out[i_max])?out[i_max]:max;
+					totalsum += sum;
+					
+					xroll_iter++;
+					
+				}while(rf_explosion && ( sum == ((int)hand * (int)next) ) );
+				
+				
+				//Stack pushing
+				if( !(rf_avg && !rf_avgSum) ){
+					std::cout << "\tTotal sum =>" << totalsum << std::endl;
+					NumberStack.push( totalsum );
+				}
+				if( rf_min ){
+					std::cout << "\tStack<-" << min << std::endl;
+					NumberStack.push( min );
+				}
+				if( rf_max ){
+					std::cout << "\tStack<-" << max << std::endl;
+					NumberStack.push( max );
+				}
+				if( rf_avg ){
+					std::cout << "\tTotal average =>" << totalsum/( xroll_iter*(int)next ) << std::endl;
+					NumberStack.push( totalsum/( xroll_iter*(int)next )  );	
+				}
+			
+			}else{	NumberStack.push( 0 );	}
+		/*/
 		}else if( strcmp(instruction[IP],"d!") == 0){
 			//Explodierender Würfel
 			int total= 0;
@@ -109,7 +210,7 @@ double pRoll(const char* input){
 			std::cout << "\t=> " << total << std::endl;
 
 			NumberStack.push( total );
-
+		/*/
 		}
 		
 		//Instructions
@@ -199,7 +300,7 @@ double pRoll(const char* input){
 		else{
 			NumberStack.push( next );
 			NumberStack.push( hand );
-			std::cout << instruction[IP] << ">Stack" << std::endl;
+			std::cout << "Stack<-" << instruction[IP] << std::endl;
 			NumberStack.push( std::stod( instruction[IP] ) );
 		}	
   		

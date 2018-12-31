@@ -197,20 +197,6 @@ double pRoll(const char* input){
 				}
 			
 			}else{	NumberStack.push( 0 );	}
-		/*/
-		}else if( strcmp(instruction[IP],"d!") == 0){
-			//Explodierender Würfel
-			int total= 0;
-			int out = 0;
-
-			do{
-				out = roll((int)next, (int)hand);
-				total += out;
-			}while(out == ((int)hand * (int)next) );
-			std::cout << "\t=> " << total << std::endl;
-
-			NumberStack.push( total );
-		/*/
 		}
 		
 		//Instructions

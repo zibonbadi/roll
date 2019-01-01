@@ -1,20 +1,25 @@
 #include <iostream>
 #include <cstring>
 #include <cstdio>
+#include <cstdlib>
+#include <ctime>
 #include <stack>
 #include <random>
 
 int* roll( int dice, int sides){
-
+	
 	std::random_device rng;
-
+	bool deterministic = (rng.entropy() == 0);
+	
+	if(deterministic){	srand(time(NULL));	}
+	
 	static int* out = (int*) realloc(out,0);
 	out = (int*) calloc(dice,sizeof(int));
 	
 	if(sides > 0){
 		for(int i=0;i<dice;i++){
 			std::cout << '\t' << dice << 'd' << sides << " (" << i << ") " ;
-			int roll = ( rng()%(sides) )+1;
+			int roll = ( ((deterministic)?rand():rng()) %(sides) )+1;
 			out[i] += roll;
 			std::cout << "-> " << roll << std::endl;
 		}
@@ -31,7 +36,7 @@ int* roll( int dice, int sides){
 double pRoll(const char* input){
 
 
-	printf("proll ver. 0.8: written by Zibon Badi.\ninput_expr: \"%s\"\n\n",input);
+	printf("proll v0.8.1: written by Zibon Badi.\ninput_expr: \"%s\"\n\n",input);
 
 	char* pch = strtok ((char*)input," ,;\n");
 	int codeSize = 0;

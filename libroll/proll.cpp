@@ -36,7 +36,7 @@ int* roll( int dice, int sides){
 double pRoll(const char* input){
 
 
-	printf("proll v0.8.1: written by Zibon Badi.\ninput_expr: \"%s\"\n\n",input);
+	printf("proll v0.8.2: written by Zibon Badi.\ninput_expr: \"%s\"\n\n",input);
 
 	char* pch = strtok ((char*)input," ,;\n");
 	int codeSize = 0;
@@ -197,8 +197,8 @@ double pRoll(const char* input){
 					NumberStack.push( max );
 				}
 				if( rf_avg ){
-					std::cout << "\tTotal average =>" << totalsum/( xroll_iter*(int)next ) << std::endl;
-					NumberStack.push( totalsum/( xroll_iter*(int)next )  );	
+					std::cout << "\tTotal average =>" << (double) totalsum/( xroll_iter*(int)next ) << std::endl;
+					NumberStack.push( (double) totalsum/( xroll_iter*(int)next )  );	
 				}
 			
 			}else{	NumberStack.push( 0 );	}

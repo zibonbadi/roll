@@ -80,7 +80,7 @@ const char* iRoll_str(const char* input){
 	
 	std::stack<char*> OperatorStack;
 
-	printf("iroll ver. 0.8: written by Zibon Badi.\ninput_infix: %s\n\n",argString);
+	printf("iroll v0.8.1: written by Zibon Badi.\ninput_infix: %s\n\n",argString);
 	
 	int exprSize = 0;
 	
@@ -143,7 +143,8 @@ const char* iRoll_str(const char* input){
 				//std::cout << topStackOperator.op << ',' << tokenOperator.op << std::endl;
 
 				//Precedence-Loop
-				while(	(	!OperatorStack.empty()				||
+				while(	!OperatorStack.empty()	&&
+					(
 						(topStackOperator.rank < tokenOperator.rank )	||
 				      		(	(topStackOperator.rank == tokenOperator.rank ) &&
 				      		 	(topStackOperator.assoc == 0)

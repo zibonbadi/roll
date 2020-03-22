@@ -1,0 +1,210 @@
+.\" Manpage for roll.
+.\" Written by Zibon Badi.
+.TH man 1 "2020-03-21" "0.8" "roll manpage"
+.SH NAME
+roll - a calculator for shell wizards
+.SH SYNOPSIS
+roll [\fIOPTIONS...\fR] \fIEXPRESSION\fR
+.SH DESCRIPTION
+.sp
+roll is a command line frontend for a custom library called \fIlibroll\fR.
+The intent of this distinction is that libroll is meant to be integrated into other programs for easy implementation of complex calculations involving dice rolling with weird numbers.
+libroll's approach is based on common Tabletop gaming \fIdice notation systems\fR, treating dice rolling as a mathematical operator with each die beginning at 1 and couting upwards to the specified amount of sides.
+
+.SH OPTIONS
+.PP
+\fB-h, -?\fR
+.RS 4
+Quick help.
+.RE
+.PP
+\fB-i\fR
+.RS 4
+Process equation in Infix notation (default).
+.RE
+.PP
+\fB-p\fR
+.RS 4
+Polish. Process quation in reverse polish notation (RPN)
+.RE
+.PP
+\fB-t\fR
+.RS 4
+Translation. Converts Infix -> RPN and returns the result.
+.RE
+.PP
+\fB-v\fR
+.RS 4
+Output verbosely. Logs every calculative substep.
+.RE
+
+.SH CALCULATIONS
+.sp
+roll uses a simple stack computation syntax, treating dice rolling as just another arithmetic operator.
+Since dice rolling is the main purpose of roll and thus can be a rather complex operator in itself, it is omitted here in favor of giving it a dedicated subsection.
+
+.PP
+\fB+\fR
+.RS 4
+Addition. Pops the top 2 numbers and pushes their sum onto the stack.
+.RE
+.PP
+\fB-\fR
+.RS 4
+Subtraction. Pops the top 2 numbers, subtracts the second one from the first and pushes the result onto the stack.
+.RE
+.PP
+\fB*\fR
+.RS 4
+Multiplication. Pops the top 2 numbers and pushes their product onto the stack.
+.RE
+.PP
+\fB/\fR
+.RS 4
+Division. Pops the top 2 numbers, divides the second one by the first and pushes the result onto the stack.
+.RE
+.PP
+\fB%\fR
+.RS 4
+Euclidean Modulo. Divides the top 2 numbers and returns the remainder to the stack.
+.RE
+.PP
+\fBa abs\fR
+.RS 4
+Absolute value. Removes the sign of a number and returns it to the stack.
+.RE
+
+.SH DICE ROLLING
+.sp
+Dice rolling in roll is achieved by the arithmetic operator class \fBd\fR and is always right-to-left associative.
+The calculative behaivor of each individual dice roll can be specified using the following flags:
+.PP
+\fBd\fR
+.RS 4
+Root symbol. It is mandatory for each dice roll to begin with this root symbol to be properly classified as a dice roll.
+.RE
+.PP
+\fBl\fR
+.RS 4
+Lowest. Push a stack entry containing the lowest rolling die on top of the result.
+.RE
+.PP
+\fBh\fR
+.RS 4
+Highest. Push a stack entry containing the highest rolling die on top of the result.
+.RE
+.PP
+\fB-\fR
+.RS 4
+Remove minimum/maximum. If placed before \fBl\fR or \fBh\fR, remove the highest, lowest scoring die from the roll.
+.RE
+.PP
+\fB/\fR
+.RS 4
+Average. Returns not the sum of every die, but their average.
+.RE
+.PP
+\fB+\fR
+.RS 4
+Sum on top. Add the average as a separate stack entry on top of the sum.
+.RE
+.PP
+\fB!\fR
+.RS 4
+Explosion roll. The dice roll is repeated and accumulated until it fails to return it's maximum possible value.
+.RE
+
+.SH BITWISE MANIPULATIONS
+.sp
+Numbers from roll's internal stack can be manipulated in a bitwise manner using the following operators:
+.PP
+\fB&\fR
+.RS 4
+Bitwise AND. Returns the bitwise value of the top two values, coupled in a boolean AND relationship.
+.RE
+.PP
+\fB|\fR
+.RS 4
+Bitwise OR. Returns the bitwise value of the top two values, coupled in a boolean OR relationship.
+.RE
+.PP
+\fB^\fR
+.RS 4
+Bitwise XOR. Returns the bitwise value of the top two values, coupled in a boolean XOR (exlclusive OR) relationship.
+.RE
+.PP
+\fB!\fR
+.RS 4
+Bitwise NOT. Returns the bitwise inverse of the top value.
+.RE
+.PP
+\fB< >\fR
+.RS 4
+Bit shift left/right. Takes the second from top value and shifts it's bits to the left/right by the top value.
+.RE
+
+.SH LOGICAL OPERATORS
+.sh
+The following operators are used for logical operations and return a boolean value to the stack. \fB0\fR is assigned \fBtrue\fR while \fB1\fR is assigned to \fBfalse\fR.
+.PP
+\fB? :\fR
+.RS 4
+IF/ENDIF. If the top of the stack does not equal 0, skip to the \fB:/ENDIF\fR instruction, otherwise continue after \fB?/IF\fR.
+.RE
+.PP
+\fB=\fR
+.RS 4
+Equal. Pushes a truth value onto the stack, depending on whether the top of the stack \fBis equal to the given value\fR (0 = true; 1 = false)
+.RE
+.PP
+\fB!=\fR
+.RS 4
+Unequal/Inversion. If the top of the stack is not 0 push 0 on top, otherwise push 1.
+.RE
+.PP
+\fB>= <=\fR
+.RS 4
+Above/below or equal. Pushes a truth value onto the stack, depending on whether the top of the stack is above/below or equal to the given value (0 = true; 1 = false)
+.RE
+
+.SH INSTRUCTIONS
+.PP
+\fBJ\fR
+.RS 4
+Jump/GOTO. Jumps to the instruction number specified at the top of the stack.
+.RE
+.PP
+\fBP\fR
+.RS 4
+Pop. Removes the Stack's top value.
+.RE
+.PP
+\fBD\fR
+.RS 4
+Duplicate. Pushes a copy of the stack's top value on top.
+.RE
+.PP
+\fBS\fR
+.RS 4
+Swap. Swaps the two top values of the stack.
+.RE
+
+.SH EXAMPLES
+.PP
+roll "1 d 20"
+.RS 4
+Throw a single 20-sided die.
+.RE
+.PP
+roll "5 d-l/ 12"
+.RS 4
+Rolls five 12-sided dice, removes the lowest rolling die and returns the average of the roll.
+.RE
+
+.SH SEE ALSO
+
+.SH BUGS
+.sh
+Currently there is no support for dice rolling with any other number type than integers. Since \fIlibroll\fR internally uses floating point numbers, the current workaround is to simply cut off the decimal portion.
+.SH AUTHOR
+Zibon Badi (http://www.github.com/zibonbadi)
